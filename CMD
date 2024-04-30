@@ -1,0 +1,112 @@
+2B _WAD
+docker -v
+docker images
+docker ps
+docker pull openjdk
+docker images
+docker ps
+docker run --name MYIMAGE -it -d openjdk
+docker images
+docker ps
+jshell
+docker images
+/exit
+docker images
+docker stop a35d4b6b06a6
+docker container rm a35d4b6b06a6
+
+*************
+
+2C_WAD
+npm install -g @angular/cli
+ng serve --o
+
+Ass_2C_WAD
+npm --version
+npm install -g @angular/cli@latest
+ng new part-c
+enter yes
+cd part-c
+ng serve
+y
+
+*********
+3A_WAD
+npm init -y
+npm install express
+node Server/server.js
+***********
+
+3B_Wad
+open download mongodb file open terminal
+monngod --dbpath pathlink
+connect
+then open vscode
+npm init -y 
+npm install express
+node index.js
+**********
+
+index.js
+const dbConnect = require('./DB.js');
+const express = require('express');
+const app = express();
+app.use(express.json())
+
+// GET API
+app.get('/', async (req, res) => {
+    try {
+        const collection = await dbConnect(); // Connect to MongoDB
+        const result = await collection.find().toArray(); // Query the collection
+        res.send(result); // Send response
+    } catch (error) {
+        console.error('Error:', error); // Log any errors
+        res.status(500).send('Internal Server Error'); // Send a generic error response
+    }
+});
+
+//post API
+app.post('/',async(req,res)=>{
+    let result = await dbConnect();
+    result = await result.insertOne(req.body);
+    res.send("Data Inserted Successfully")
+});
+
+//put API
+app.put('/:Name',async(req,res)=>{
+    let result = await dbConnect();
+    result = await result.updateOne({name:req.params.name},{$set:req.body});
+    res.send("Data updated Successfully")
+});
+
+// delete API
+app.delete('/:Name',async(req,res)=>{
+    let result = await dbConnect();
+    result = await result.deleteOne({name:req.params.name});
+    res.send("Data deleted Successfully")
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+********
+DB.js
+const { MongoClient } = require('mongodb');
+const url = "mongodb://localhost:27017";
+const database = 'college';
+const client = new MongoClient(url, { useUnifiedTopology: true });
+
+const dbConnect = async () => {
+    try {
+        await client.connect(); // Connect to MongoDB
+        const db = client.db(database); // Select the database
+        return db.collection('IT'); // Return the collection
+    } catch (error) {
+        console.error('Error:', error); // Log any errors
+        throw error; // Re-throw the error to be handled by the caller
+    }
+};
+
+module.exports = dbConnect;
